@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Richie Alvarado – Serenatas para Mamá | ALVA Producciones</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --rose:       #e8a0a8;
+      --rose-light: #f5d5da;
+      --rose-deep:  #c4606e;
+      --blush:      #fdf0f1;
+      --cream:      #faf7f4;
+      --bark:       #5c3d3d;
+      --ink:        #2e1e1e;
+      --gold:       #c9a96e;
+      --white:      #ffffff;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--cream);
+      color: var(--ink);
+      font-family: 'Jost', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* ─── NOISE TEXTURE OVERLAY ─── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ─── HERO ─── */
+    #hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: linear-gradient(160deg, #fbe8ec 0%, #f5d5da 40%, #ecddd8 100%);
+    }
+
+    /* Petals canvas */
+    #petals-canvas {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    /* Torn-paper top stripe */
+    .torn-top {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 60px;
+      background: var(--white);
+      clip-path: polygon(0 0, 100% 0, 100% 30%, 95% 60%, 90% 40%, 85% 65%, 80% 35%, 75% 58%, 70% 40%, 65% 62%, 60% 38%, 55% 60%, 50% 35%, 45% 60%, 40% 40%, 35% 62%, 30% 38%, 25% 60%, 20% 40%, 15% 62%, 10% 38%, 5% 60%, 0 35%);
+    }
+
+    /* Brand bar */
+    .brand-bar {
+      position: absolute;
+      top: 18px; left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 10;
+    }
+    .brand-bar .logo-text {
+      font-family: 'Jost', sans-serif;
+      font-weight: 600;
+      font-size: 13px;
+      letter-spacing: 5px;
+      color: var(--bark);
+      text-transform: uppercase;
+    }
+    .brand-bar .logo-sub {
+      font-size: 9px;
+      letter-spacing: 3px;
+      color: var(--rose-deep);
+      text-transform: uppercase;
+      font-weight: 400;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 100px 24px 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 16px;
+      letter-spacing: 4px;
+      color: var(--rose-deep);
+      margin-bottom: 8px;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.2s forwards;
+    }
+
+    .hero-artist {
+      font-family: 'Great Vibes', cursive;
+      font-size: clamp(64px, 12vw, 110px);
+      color: var(--bark);
+      line-height: 1;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.4s forwards;
+    }
+
+    .hero-divider {
+      width: 1px;
+      height: 50px;
+      background: linear-gradient(to bottom, transparent, var(--rose-deep), transparent);
+      margin: 20px auto;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.6s forwards;
+    }
+
+    .hero-title {
+      font-family: 'Great Vibes', cursive;
+      font-size: clamp(48px, 9vw, 88px);
+      color: var(--rose-deep);
+      line-height: 1.1;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.7s forwards;
+    }
+
+    .hero-subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 17px;
+      letter-spacing: 2px;
+      color: var(--bark);
+      margin-top: 18px;
+      opacity: 0;
+      animation: fadeUp 0.9s 0.9s forwards;
+    }
+
+    .hero-dates {
+      margin-top: 28px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      opacity: 0;
+      animation: fadeUp 0.9s 1.1s forwards;
+    }
+    .hero-dates .date-pill {
+      background: var(--white);
+      border: 1px solid var(--rose);
+      border-radius: 100px;
+      padding: 7px 18px;
+      font-size: 13px;
+      letter-spacing: 1px;
+      color: var(--bark);
+      font-weight: 400;
+      box-shadow: 0 2px 12px rgba(196,96,110,0.08);
+    }
+
+    .hero-cta-row {
+      margin-top: 38px;
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: center;
+      opacity: 0;
+      animation: fadeUp 0.9s 1.3s forwards;
+    }
+
+    .btn-primary {
+      background: var(--rose-deep);
+      color: var(--white);
+      border: none;
+      border-radius: 100px;
+      padding: 14px 34px;
+      font-family: 'Jost', sans-serif;
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.25s, box-shadow 0.25s;
+      box-shadow: 0 4px 20px rgba(196,96,110,0.30);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(196,96,110,0.42);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--bark);
+      border: 1px solid var(--rose);
+      border-radius: 100px;
+      padding: 14px 34px;
+      font-family: 'Jost', sans-serif;
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.25s, background 0.25s;
+    }
+    .btn-outline:hover {
+      background: var(--rose-light);
+      transform: translateY(-2px);
+    }
+
+    /* ─── SCROLL INDICATOR ─── */
+    .scroll-hint {
+      position: absolute;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      opacity: 0;
+      animation: fadeIn 1s 2s forwards;
+    }
+    .scroll-hint span {
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: var(--rose-deep);
+      text-transform: uppercase;
+    }
+    .scroll-arrow {
+      width: 1px; height: 40px;
+      background: linear-gradient(to bottom, var(--rose-deep), transparent);
+      animation: scrollPulse 1.8s infinite;
+    }
+
+    /* ─── SECTION BASE ─── */
+    section { padding: 100px 24px; }
+
+    .section-label {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 13px;
+      letter-spacing: 5px;
+      color: var(--rose-deep);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      text-align: center;
+    }
+
+    .section-title {
+      font-family: 'Great Vibes', cursive;
+      font-size: clamp(44px, 7vw, 72px);
+      color: var(--bark);
+      text-align: center;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+
+    .section-body {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px;
+      line-height: 1.8;
+      color: #5a3838;
+      text-align: center;
+      max-width: 640px;
+      margin: 0 auto;
+    }
+
+    /* ─── ABOUT ─── */
+    #about {
+      background: var(--white);
+      position: relative;
+      overflow: hidden;
+    }
+
+    #about::before {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 400px; height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(232,160,168,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .about-grid {
+      max-width: 1100px;
+      margin: 60px auto 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+
+    .about-image-wrap {
+      position: relative;
+    }
+    .about-photo-frame {
+      width: 100%;
+      aspect-ratio: 3/4;
+      background: linear-gradient(135deg, var(--rose-light), #e8d0c8);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 20px 60px rgba(92,61,61,0.18);
+    }
+    .about-photo-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: grayscale(20%) contrast(1.05);
+    }
+    .photo-badge {
+      position: absolute;
+      bottom: -20px; right: -20px;
+      background: var(--rose-deep);
+      color: var(--white);
+      border-radius: 4px;
+      padding: 16px 22px;
+      font-family: 'Great Vibes', cursive;
+      font-size: 26px;
+      box-shadow: 0 8px 24px rgba(196,96,110,0.4);
+    }
+    .photo-tape {
+      position: absolute;
+      top: -12px; left: 50%;
+      transform: translateX(-50%) rotate(-2deg);
+      width: 60px; height: 22px;
+      background: rgba(249,215,183,0.7);
+      border-radius: 2px;
+    }
+
+    .about-text h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 13px;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--rose-deep);
+      margin-bottom: 16px;
+    }
+    .about-text h2 {
+      font-family: 'Great Vibes', cursive;
+      font-size: 58px;
+      color: var(--bark);
+      line-height: 1;
+      margin-bottom: 24px;
+    }
+    .about-text p {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px;
+      line-height: 1.9;
+      color: #5a3838;
+      margin-bottom: 20px;
+    }
+
+    /* ─── PACKAGE ─── */
+    #paquete {
+      background: linear-gradient(170deg, #fce8ec 0%, var(--cream) 60%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .package-card {
+      max-width: 820px;
+      margin: 60px auto 0;
+      background: var(--white);
+      border-radius: 16px;
+      box-shadow: 0 30px 80px rgba(92,61,61,0.12);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .package-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, var(--rose-light), var(--rose-deep), var(--gold), var(--rose-deep), var(--rose-light));
+    }
+
+    .package-header {
+      padding: 52px 52px 36px;
+      text-align: center;
+      border-bottom: 1px solid var(--rose-light);
+    }
+
+    .price-tag {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 4px;
+      margin-bottom: 6px;
+    }
+    .price-from {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 16px;
+      color: var(--rose-deep);
+      font-style: italic;
+    }
+    .price-amount {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 72px;
+      font-weight: 300;
+      color: var(--bark);
+      line-height: 1;
+    }
+    .price-currency {
+      font-family: 'Jost', sans-serif;
+      font-size: 22px;
+      color: var(--rose-deep);
+      font-weight: 400;
+      align-self: flex-start;
+      padding-top: 14px;
+    }
+
+    .package-subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 17px;
+      color: #7a4a4a;
+    }
+
+    .package-items {
+      padding: 44px 52px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .pkg-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .pkg-icon {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: var(--blush);
+      border: 1px solid var(--rose-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .pkg-item-text strong {
+      display: block;
+      font-family: 'Jost', sans-serif;
+      font-size: 13px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--bark);
+      font-weight: 500;
+      margin-bottom: 3px;
+    }
+    .pkg-item-text span {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 15px;
+      color: #7a4a4a;
+      line-height: 1.5;
+    }
+
+    .package-footer {
+      padding: 28px 52px 44px;
+      text-align: center;
+      border-top: 1px solid var(--rose-light);
+    }
+
+    .package-note {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 15px;
+      font-style: italic;
+      color: #9a6a6a;
+      margin-bottom: 28px;
+      line-height: 1.7;
+    }
+
+    /* ─── DATES ─── */
+    #fechas {
+      background: var(--bark);
+      color: var(--white);
+      text-align: center;
+    }
+
+    #fechas .section-label { color: var(--rose-light); }
+    #fechas .section-title { color: var(--rose-light); }
+
+    .dates-row {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin-top: 52px;
+    }
+    .date-card {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(232,160,168,0.3);
+      border-radius: 12px;
+      padding: 32px 36px;
+      min-width: 140px;
+      transition: transform 0.3s, background 0.3s;
+    }
+    .date-card:hover {
+      transform: translateY(-6px);
+      background: rgba(232,160,168,0.15);
+    }
+    .date-card .day-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 58px;
+      color: var(--rose-light);
+      line-height: 1;
+      font-weight: 300;
+    }
+    .date-card .day-label {
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(245,213,218,0.7);
+      margin-top: 6px;
+    }
+    .date-note {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 17px;
+      color: rgba(245,213,218,0.7);
+      margin-top: 40px;
+    }
+
+    /* ─── BOOKING ─── */
+    #reserva {
+      background: var(--blush);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #reserva::after {
+      content: '';
+      position: absolute;
+      bottom: -60px; left: -60px;
+      width: 320px; height: 320px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(232,160,168,0.25) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .contact-cards {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin-top: 52px;
+    }
+
+    .contact-card {
+      background: var(--white);
+      border: 1px solid var(--rose-light);
+      border-radius: 16px;
+      padding: 36px 40px;
+      min-width: 240px;
+      text-align: center;
+      text-decoration: none;
+      transition: transform 0.25s, box-shadow 0.25s;
+      box-shadow: 0 4px 20px rgba(196,96,110,0.06);
+    }
+    .contact-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 48px rgba(196,96,110,0.16);
+    }
+    .contact-card .cc-icon {
+      font-size: 36px;
+      margin-bottom: 14px;
+      display: block;
+    }
+    .contact-card .cc-label {
+      font-family: 'Jost', sans-serif;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--rose-deep);
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    .contact-card .cc-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px;
+      color: var(--bark);
+      font-weight: 500;
+    }
+
+    .reserva-note {
+      max-width: 560px;
+      margin: 40px auto 0;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 17px;
+      font-style: italic;
+      color: #7a4a4a;
+      line-height: 1.8;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--ink);
+      color: rgba(255,255,255,0.55);
+      text-align: center;
+      padding: 40px 24px;
+    }
+    footer .footer-logo {
+      font-family: 'Great Vibes', cursive;
+      font-size: 36px;
+      color: var(--rose-light);
+      margin-bottom: 8px;
+    }
+    footer .footer-sub {
+      font-size: 11px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: rgba(245,213,218,0.5);
+      margin-bottom: 20px;
+    }
+    footer p {
+      font-size: 12px;
+      line-height: 1.8;
+      font-family: 'Cormorant Garamond', serif;
+    }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes scrollPulse {
+      0%, 100% { transform: scaleY(1); opacity: 1; }
+      50%       { transform: scaleY(0.7); opacity: 0.5; }
+    }
+
+    /* ─── REVEAL ON SCROLL ─── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.15s; }
+    .reveal-delay-2 { transition-delay: 0.30s; }
+    .reveal-delay-3 { transition-delay: 0.45s; }
+    .reveal-delay-4 { transition-delay: 0.60s; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
+      .about-grid { grid-template-columns: 1fr; gap: 40px; }
+      .about-image-wrap { max-width: 340px; margin: 0 auto; }
+      .package-items { grid-template-columns: 1fr; }
+      .package-header, .package-items, .package-footer { padding-left: 28px; padding-right: 28px; }
+      .about-text h2 { font-size: 44px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════ HERO ══════════ -->
+  <section id="hero">
+    <canvas id="petals-canvas"></canvas>
+    <div class="torn-top"></div>
+
+    <div class="brand-bar">
+      <div>
+        <div class="logo-text">ALVA</div>
+        <div class="logo-sub">Producciones</div>
+      </div>
+    </div>
+
+    <div class="hero-inner">
+      <p class="hero-eyebrow">Presenta</p>
+      <h1 class="hero-artist">Richie Alvarado</h1>
+      <div class="hero-divider"></div>
+      <h2 class="hero-title">Serenatas<br>para Mamá</h2>
+      <p class="hero-subtitle">Una experiencia musical única e irrepetible</p>
+
+      <div class="hero-dates">
+        <span class="date-pill">8 de mayo</span>
+        <span class="date-pill">9 de mayo</span>
+        <span class="date-pill">10 de mayo</span>
+        <span class="date-pill">11 de mayo</span>
+      </div>
+
+      <div class="hero-cta-row">
+        <a href="#reserva" class="btn-primary">
+          <span>♫</span> Reservar ahora
+        </a>
+        <a href="#paquete" class="btn-outline">Ver paquete</a>
+      </div>
+    </div>
+
+    <div class="scroll-hint">
+      <span>Scroll</span>
+      <div class="scroll-arrow"></div>
+    </div>
+  </section>
+
+  <!-- ══════════ ABOUT ══════════ -->
+  <section id="about">
+    <div class="about-grid" style="max-width:1100px;margin:0 auto;">
+      <div class="about-image-wrap reveal">
+        <div class="about-photo-frame">
+          <div class="photo-tape"></div>
+          <!-- Placeholder using SVG singer silhouette -->
+          <svg viewBox="0 0 400 520" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block;background:linear-gradient(145deg,#e8c8cc,#d4a8b0)">
+            <defs>
+              <radialGradient id="spotlight" cx="50%" cy="30%" r="60%">
+                <stop offset="0%" stop-color="rgba(255,240,230,0.4)"/>
+                <stop offset="100%" stop-color="rgba(0,0,0,0)"/>
+              </radialGradient>
+            </defs>
+            <rect width="400" height="520" fill="url(#spotlight)"/>
+            <!-- Body -->
+            <ellipse cx="200" cy="310" rx="70" ry="90" fill="#2e1e1e" opacity="0.85"/>
+            <!-- Head -->
+            <ellipse cx="200" cy="170" rx="48" ry="55" fill="#c4906a" opacity="0.9"/>
+            <!-- Hair -->
+            <ellipse cx="200" cy="145" rx="50" ry="30" fill="#1a0f0f" opacity="0.9"/>
+            <!-- Mic -->
+            <rect x="196" y="185" width="8" height="50" fill="#555" rx="4"/>
+            <ellipse cx="200" cy="183" rx="10" ry="12" fill="#333"/>
+            <!-- Mic stand hint -->
+            <rect x="198" y="234" width="4" height="70" fill="#666" rx="2"/>
+            <!-- Stage light beam -->
+            <polygon points="200,0 140,180 260,180" fill="rgba(255,230,200,0.08)"/>
+            <!-- Decorative flowers -->
+            <circle cx="60" cy="460" r="24" fill="rgba(196,96,110,0.4)"/>
+            <circle cx="340" cy="480" r="18" fill="rgba(196,96,110,0.35)"/>
+            <circle cx="30" cy="400" r="14" fill="rgba(201,169,110,0.5)"/>
+          </svg>
+        </div>
+        <div class="photo-badge">Richie A.</div>
+      </div>
+
+      <div class="about-text reveal reveal-delay-2">
+        <h3>El Artista</h3>
+        <h2>Una voz que llega al corazón</h2>
+        <p>Richie Alvarado es el intérprete que transforma los momentos más especiales en recuerdos eternos. Con una voz que combina sentimiento y técnica, cada serenata es una experiencia diseñada especialmente para ella.</p>
+        <p>Respaldado por <strong>ALVA Producciones</strong>, lleva consigo equipo de audio profesional, repertorio amplio y toda la emoción que Mamá merece en su día.</p>
+        <a href="#paquete" class="btn-primary" style="margin-top:12px;">Ver paquete ↓</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ PAQUETE ══════════ -->
+  <section id="paquete">
+    <p class="section-label reveal">Lo que incluye</p>
+    <h2 class="section-title reveal reveal-delay-1">El Paquete</h2>
+    <p class="section-body reveal reveal-delay-2">Todo lo que necesitas para sorprender a Mamá en un solo paquete lleno de amor y música.</p>
+
+    <div class="package-card reveal reveal-delay-2">
+      <div class="package-header">
+        <div class="price-tag">
+          <span class="price-from">Desde</span>
+          <span class="price-currency">$</span>
+          <span class="price-amount">1,000</span>
+        </div>
+        <p class="package-subtitle">El precio varía según canciones, arreglo y ubicación</p>
+      </div>
+
+      <div class="package-items">
+        <div class="pkg-item">
+          <div class="pkg-icon">🎤</div>
+          <div class="pkg-item-text">
+            <strong>Sistema de Audio</strong>
+            <span>Equipo profesional incluido, sin costo adicional</span>
+          </div>
+        </div>
+        <div class="pkg-item">
+          <div class="pkg-icon">🎵</div>
+          <div class="pkg-item-text">
+            <strong>5 Canciones</strong>
+            <span>Tú eliges el repertorio, nosotros lo cantamos con el corazón</span>
+          </div>
+        </div>
+        <div class="pkg-item">
+          <div class="pkg-icon">🎈</div>
+          <div class="pkg-item-text">
+            <strong>Arreglo de Globos con Dulces</strong>
+            <span>Un detalle dulce para endulzar su día</span>
+          </div>
+        </div>
+        <div class="pkg-item">
+          <div class="pkg-icon">💐</div>
+          <div class="pkg-item-text">
+            <strong>Arreglo Floral</strong>
+            <span>Flores frescas para una mamá especial (según elección)</span>
+          </div>
+        </div>
+        <div class="pkg-item">
+          <div class="pkg-icon">🍾</div>
+          <div class="pkg-item-text">
+            <strong>Canasta con Botella</strong>
+            <span>Presentación elegante para brindar por ella</span>
+          </div>
+        </div>
+        <div class="pkg-item">
+          <div class="pkg-icon">✨</div>
+          <div class="pkg-item-text">
+            <strong>Show Completo</strong>
+            <span>Pregunta por disponibilidad de horas completas</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="package-footer">
+        <p class="package-note">Los arreglos y horarios están sujetos a disponibilidad y viabilidad de traslado.<br>Manda WhatsApp para conocer disponibilidad y cotización exacta.</p>
+        <a href="https://wa.me/5262424395" target="_blank" class="btn-primary">
+          <span>📱</span> Solicitar cotización por WhatsApp
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ FECHAS ══════════ -->
+  <section id="fechas">
+    <p class="section-label reveal">Agenda tu fecha</p>
+    <h2 class="section-title reveal reveal-delay-1">Disponibilidad</h2>
+
+    <div class="dates-row">
+      <div class="date-card reveal reveal-delay-1">
+        <div class="day-num">8</div>
+        <div class="day-label">Mayo</div>
+      </div>
+      <div class="date-card reveal reveal-delay-2">
+        <div class="day-num">9</div>
+        <div class="day-label">Mayo</div>
+      </div>
+      <div class="date-card reveal reveal-delay-3">
+        <div class="day-num">10</div>
+        <div class="day-label">Mayo</div>
+      </div>
+      <div class="date-card reveal reveal-delay-4">
+        <div class="day-num">11</div>
+        <div class="day-label">Mayo</div>
+      </div>
+    </div>
+
+    <p class="date-note reveal">Cupos limitados — reserva con anticipación</p>
+  </section>
+
+  <!-- ══════════ RESERVA ══════════ -->
+  <section id="reserva">
+    <p class="section-label reveal">¿Lista la sorpresa?</p>
+    <h2 class="section-title reveal reveal-delay-1">Haz tu Reserva</h2>
+    <p class="section-body reveal reveal-delay-2">Contáctanos por cualquiera de estas vías y asegura el momento más especial de su día.</p>
+
+    <div class="contact-cards">
+      <a href="https://wa.me/5262424395" target="_blank" class="contact-card reveal reveal-delay-1">
+        <span class="cc-icon">💬</span>
+        <div class="cc-label">WhatsApp · Reservas</div>
+        <div class="cc-value">56 2424 3995</div>
+      </a>
+      <a href="https://instagram.com/richie_alvaradooficial" target="_blank" class="contact-card reveal reveal-delay-2">
+        <span class="cc-icon">📸</span>
+        <div class="cc-label">Instagram</div>
+        <div class="cc-value">@richie_alvaradooficial</div>
+      </a>
+      <a href="https://facebook.com/richie_alvaradooficial" target="_blank" class="contact-card reveal reveal-delay-3">
+        <span class="cc-icon">🔵</span>
+        <div class="cc-label">Facebook</div>
+        <div class="cc-value">@richie_alvaradooficial</div>
+      </a>
+    </div>
+
+    <p class="reserva-note reveal">
+      Manda mensaje de WhatsApp al número de reserva para conocer la disponibilidad y solicitar tu cotización personalizada.
+    </p>
+  </section>
+
+  <!-- ══════════ FOOTER ══════════ -->
+  <footer>
+    <div class="footer-logo">ALVA Producciones</div>
+    <div class="footer-sub">Richie Alvarado Oficial</div>
+    <p>Los costos van desde los $1,000, varían dependiendo de la cantidad de canciones,<br>el tipo de arreglo de tu elección y la ubicación de tu reservación.</p>
+    <p style="margin-top:16px;font-size:11px;opacity:0.4;">© 2025 ALVA Producciones · Todos los derechos reservados</p>
+  </footer>
+
+  <script>
+    /* ── Falling Petals ── */
+    const canvas = document.getElementById('petals-canvas');
+    const ctx    = canvas.getContext('2d');
+    let petals   = [];
+    let W, H;
+
+    function resize() {
+      W = canvas.width  = canvas.offsetWidth;
+      H = canvas.height = canvas.offsetHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const COLORS = ['#e8a0a8','#f5d5da','#c4606e','#d4a8b0','#f0c8cc','#c9a96e'];
+
+    class Petal {
+      constructor() { this.reset(true); }
+      reset(fresh = false) {
+        this.x    = Math.random() * W;
+        this.y    = fresh ? Math.random() * -H : -20;
+        this.r    = 4 + Math.random() * 6;
+        this.rot  = Math.random() * Math.PI * 2;
+        this.drot = (Math.random() - 0.5) * 0.04;
+        this.vx   = (Math.random() - 0.5) * 0.8;
+        this.vy   = 0.6 + Math.random() * 1.2;
+        this.color= COLORS[Math.floor(Math.random() * COLORS.length)];
+        this.alpha= 0.5 + Math.random() * 0.4;
+      }
+      update() {
+        this.x   += this.vx;
+        this.y   += this.vy;
+        this.rot += this.drot;
+        if (this.y > H + 20) this.reset();
+      }
+      draw() {
+        ctx.save();
+        ctx.globalAlpha = this.alpha;
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.rot);
+        ctx.beginPath();
+        ctx.ellipse(0, 0, this.r, this.r * 0.55, 0, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    for (let i = 0; i < 55; i++) petals.push(new Petal());
+
+    function loop() {
+      ctx.clearRect(0, 0, W, H);
+      petals.forEach(p => { p.update(); p.draw(); });
+      requestAnimationFrame(loop);
+    }
+    loop();
+
+    /* ── Scroll Reveal ── */
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
